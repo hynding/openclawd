@@ -26,10 +26,27 @@ def main() -> None:
             api_key=openclaw_config.get("api_key"),
         )
 
+        device_value = model_config.get("device")
+        if device_value is None:
+            device = -1
+        elif isinstance(device_value, str):
+            normalized_device = device_value.strip().lower()
+            if normalized_device == "cpu":
+                device = -1
+            else:
+                try:
+                    device = int(normalized_device)
+                except ValueError as exc:
+                    raise RuntimeError(
+                        "Model device must be an integer index (for GPU) or 'cpu'."
+                    ) from exc
+        else:
+            device = int(device_value)
+
         model = load_local_hf_pipeline(
             model_path=model_config.get("path", "./models/local-text-model"),
             task=model_config.get("task", "text-generation"),
-            device=int(model_config.get("device", -1)),
+            device=device,
         )
 
         prompt = "Explain why local open-source models are useful for private AI workflows."
@@ -40,7 +57,7 @@ def main() -> None:
             print(json.dumps(output, indent=2, ensure_ascii=False))
         else:
             print(output)
-    except (FileNotFoundError, RuntimeError, ValueError) as exc:
+    except (FileNotFoundError, RuntimeError, TypeError, ValueError) as exc:
         # Keep errors user-friendly for first-time setup and model wiring mistakes.
         print(f"Error: {exc}")
 

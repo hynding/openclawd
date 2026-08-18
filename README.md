@@ -28,8 +28,15 @@ openclawd/
 ```bash
 python -m venv .venv
 source .venv/bin/activate
+# On Windows (PowerShell), use: .venv\Scripts\Activate.ps1
 pip install --upgrade pip
 pip install -r requirements.txt
+```
+
+For TensorFlow/SavedModel workflows, install the optional extras file:
+
+```bash
+pip install -r requirements-tensorflow.txt
 ```
 
 ## Run the example

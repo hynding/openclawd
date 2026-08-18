@@ -45,4 +45,20 @@ def load_config(config_path: str | Path) -> Dict[str, Any]:
     if not isinstance(data, dict):
         raise RuntimeError(f"Configuration root must be a dictionary in {path}")
 
+    _validate_mapping_keys_are_strings(data, path=str(path))
+
     return data
+
+
+def _validate_mapping_keys_are_strings(value: Any, path: str) -> None:
+    """Validate nested mapping keys are strings for safe kwargs unpacking."""
+    if isinstance(value, dict):
+        for key, nested_value in value.items():
+            if not isinstance(key, str):
+                raise RuntimeError(
+                    f"Configuration contains non-string key at {path}: {key!r}"
+                )
+            _validate_mapping_keys_are_strings(nested_value, f"{path}.{key}")
+    elif isinstance(value, list):
+        for index, list_value in enumerate(value):
+            _validate_mapping_keys_are_strings(list_value, f"{path}[{index}]")

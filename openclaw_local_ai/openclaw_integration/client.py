@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
+from openclaw_local_ai.models.local_model import run_local_inference
+
 
 @dataclass
 class OpenClawWrapper:
@@ -60,12 +62,12 @@ class OpenClawWrapper:
         Raises:
             RuntimeError: If inference fails.
         """
-        if not callable(model_callable):
-            raise RuntimeError("Loaded model object is not callable for inference.")
-
         try:
-            # For local-first integration, we run the model directly.
-            # This keeps behavior predictable even if OpenClaw backends differ.
-            return model_callable(prompt, **model_kwargs)
+            # Delegate to shared inference helper so validation behavior is consistent.
+            return run_local_inference(
+                model_callable=model_callable,
+                prompt=prompt,
+                generation_kwargs=model_kwargs,
+            )
         except Exception as exc:  # pragma: no cover - runtime error surface
             raise RuntimeError(f"Inference failed: {exc}") from exc

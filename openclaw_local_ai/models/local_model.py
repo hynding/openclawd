@@ -66,11 +66,11 @@ def run_local_inference(model_callable: Any, prompt: str, generation_kwargs: Dic
     Raises:
         RuntimeError: If prompt is invalid or inference call fails.
     """
-    if not prompt or not isinstance(prompt, str):
-        raise RuntimeError("Prompt must be a non-empty string.")
-
     if not callable(model_callable):
-        raise RuntimeError("Model object is not callable.")
+        raise RuntimeError("Model object is not callable for inference.")
+
+    if not isinstance(prompt, str) or not prompt.strip():
+        raise RuntimeError("Prompt must be a non-empty string.")
 
     kwargs = generation_kwargs or {}
 

@@ -27,9 +27,25 @@ class LocalModelTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             run_local_inference(fake_model, "")
 
+    def test_inference_rejects_non_callable_model(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "not callable"):
+            run_local_inference({}, "hello")
+
+    def test_successful_inference_returns_callable_output(self) -> None:
+        fake_model = lambda prompt, **kwargs: [{"generated_text": f"{prompt} done"}]  # noqa: E731
+        output = run_local_inference(fake_model, "task")
+        self.assertEqual(output[0]["generated_text"], "task done")
+
     def test_missing_config_raises(self) -> None:
         with self.assertRaises(FileNotFoundError):
             load_config(Path("/path/that/does/not/exist.yaml"))
+
+    def test_non_string_config_key_raises(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            config_path = Path(tmp_dir) / "config.yaml"
+            config_path.write_text("1: invalid-key-type\n", encoding="utf-8")
+            with self.assertRaises(RuntimeError):
+                load_config(config_path)
 
 
 if __name__ == "__main__":
