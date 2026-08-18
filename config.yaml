@@ -1,0 +1,23 @@
+# Default runtime settings for the local OpenClaw + model integration.
+openclaw:
+  # Set to false to skip OpenClaw client initialization.
+  enabled: true
+  # Optional endpoint/token placeholders for deployments that require them.
+  endpoint: null
+  api_key: null
+
+model:
+  # Local directory that contains a Hugging Face compatible model and tokenizer.
+  path: ./models/local-text-model
+  # Task type for transformers.pipeline (example: text-generation).
+  task: text-generation
+  # Device ID for inference. Use -1 for CPU.
+  device: -1
+  # Optional TensorFlow model path for users loading a TF SavedModel instead.
+  tf_model_path: null
+
+runtime:
+  # Generation arguments passed to the model pipeline.
+  max_new_tokens: 64
+  temperature: 0.7
+  do_sample: true

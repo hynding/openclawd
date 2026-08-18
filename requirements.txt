@@ -1,0 +1,7 @@
+openclaw>=0.1.0
+numpy>=1.26,<3.0
+pyyaml>=6.0,<7.0
+torch>=2.3,<3.0
+transformers>=4.42,<5.0
+safetensors>=0.4,<1.0
+accelerate>=0.33,<1.0
