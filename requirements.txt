@@ -1,0 +1,8 @@
+openclaw
+numpy
+pyyaml
+torch
+transformers
+tensorflow
+safetensors
+accelerate
